@@ -1,15 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes, Redirect} from 'react-router-dom';
+import Cart from './components/Cart/Cart';
+import Navbar from './components/Navbar/Navbar';
 import Products from './components/Products/Products';
+import SingleItem from './components/SingleItem/SingleItem';
 
-function App() {
+import { connect } from "react-redux";
+
+function App({ current }) {
   return (
-    <div>
-      <h1> Hi this is a product pages </h1>
-      <Products></Products>
-    </div>
+    <main>
+      <Navbar></Navbar>
+      <Routes>
+        <Route path='/' element={<Products></Products>}></Route>
+        <Route exact path="/cart" element={<Cart></Cart>} />
+        {!current ? (
+            <Redirect to="/" />
+          ) : (
+            <Route exact path="/product/:id" element={<SingleItem></SingleItem>} />
+          )}
+      </Routes>
+    </main>
   );
 }
 
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    current: state.shop.currentItem,
+  };
+};
+
+export default connect(mapStateToProps)(App);
